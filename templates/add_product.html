@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% if product %}Edit{% else %}Add{% endif %} Product</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #a29bfe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background: white;
+      padding: 35px;
+      border-radius: 15px;
+      width: 400px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      color: #2d3436;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #dcdde1;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #0984e3;
+      box-shadow: 0 0 5px rgba(9, 132, 227, 0.3);
+      outline: none;
+    }
+
+    textarea {
+      height: 90px;
+      resize: none;
+    }
+
+    button {
+      background: linear-gradient(135deg, #0984e3, #6c5ce7);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #74b9ff, #a29bfe);
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #0984e3;
+      font-weight: bold;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .back-btn:hover {
+      color: #6c5ce7;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>{% if product %}✏️ Edit Product{% else %}➕ Add New Product{% endif %}</h2>
+
+  <form method="POST" action="{% if product %}{{ url_for('update_product', id=product.id) }}{% else %}{{ url_for('add_product') }}{% endif %}">
+    <input type="text" name="name" placeholder="Product Name" value="{{ product.name if product }}" required>
+    <input type="text" name="category" placeholder="Category" value="{{ product.category if product }}" required>
+    <input type="number" name="quantity" placeholder="Quantity" value="{{ product.quantity if product }}" required>
+    <input type="number" step="0.01" name="price" placeholder="Price" value="{{ product.price if product }}" required>
+    <textarea name="description" placeholder="Description">{{ product.description if product }}</textarea>
+    <input type="text" name="image" placeholder="Image filename (e.g., laptop.jpg)" value="{{ product.image if product }}">
+    <button type="submit">💾 Save</button>
+  </form>
+
+  <a href="{{ url_for('inventory') }}" class="back-btn">← Back to Inventory</a>
+</div>
+
+</body>
+</html>

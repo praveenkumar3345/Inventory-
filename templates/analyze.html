@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inventory Analysis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h2 {
+      color: #0d47a1;
+      margin-top: 40px;
+      font-size: 28px;
+    }
+
+    h3 {
+      color: #333;
+      font-weight: 500;
+      margin-top: 25px;
+    }
+
+    table {
+      margin: 30px auto;
+      border-collapse: collapse;
+      width: 80%;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    th {
+      background-color: #1976d2;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #e3f2fd;
+      transition: 0.3s;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 25px;
+      background-color: #2196f3;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #0b7dda;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      table {
+        width: 95%;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>📊 Inventory Analysis</h2>
+
+  <h3>Total Stock Across All Categories: {{ total_quantity }}</h3>
+
+  <table>
+    <tr>
+      <th>Category</th>
+      <th>Total Stock</th>
+      <th>Number of Products</th>
+    </tr>
+    {% for c in category_data %}
+    <tr>
+      <td>{{ c.category }}</td>
+      <td>{{ c.total_stock }}</td>
+      <td>{{ c.total_products }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h3>Most Stocked Product: {{ top_product.name }} ({{ top_product.quantity }} pcs)</h3>
+
+  <a href="/inventory" class="back-btn">← Back to Inventory</a>
+</body>
+</html>

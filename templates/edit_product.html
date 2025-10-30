@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Product</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    margin: 0;
+    padding: 0;
+  }
+
+  .edit-container {
+    max-width: 450px;
+    margin: 80px auto;
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 16px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+  }
+
+  .edit-container:hover {
+    transform: translateY(-5px);
+  }
+
+  .edit-container h2 {
+    text-align: center;
+    color: #0d47a1;
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    color: #333;
+    font-size: 15px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border: 1px solid #b0bec5;
+    border-radius: 10px;
+    outline: none;
+    font-size: 15px;
+    transition: all 0.3s ease;
+  }
+
+  input:focus, textarea:focus {
+    border-color: #2196f3;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+  }
+
+  button {
+    width: 100%;
+    background: #2196f3;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background: #0b7dda;
+    transform: scale(1.03);
+  }
+
+  .back-btn {
+    display: block;
+    text-align: center;
+    margin-top: 18px;
+    text-decoration: none;
+    color: #0d47a1;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  .back-btn:hover {
+    color: #1565c0;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 600px) {
+    .edit-container {
+      width: 90%;
+      padding: 25px;
+    }
+  }
+</style>
+
+</head>
+<body>
+
+  <div class="edit-container">
+    <h2>{% if product %}Edit Product{% else %}Add Product{% endif %}</h2>
+
+<form method="POST"
+      action="{% if product %}{{ url_for('edit_product', id=product.id) }}{% else %}{{ url_for('add_product') }}{% endif %}">
+  <label>Name:</label>
+      <input type="text" name="name" value="{{ product.name }}" required>
+
+      <label>Category:</label>
+      <input type="text" name="category" value="{{ product.category }}" required>
+
+      <label>Price:</label>
+      <input type="number" name="price" value="{{ product.price }}" required>
+
+      <label>Quantity:</label>
+      <input type="number" name="quantity" value="{{ product.quantity }}" required>
+
+      <label>Description:</label>
+      <textarea name="description" rows="3">{{ product.description }}</textarea>
+
+      <label>Image URL:</label>
+      <input type="text" name="image" value="{{ product.image }}">
+
+      <button type="submit">Update Product</button>
+    </form>
+
+    <a href="{{ url_for('inventory') }}" class="back-btn">← Back to Inventory</a>
+  </div>
+
+</body>
+</html>

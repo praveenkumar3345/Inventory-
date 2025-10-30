@@ -1,0 +1,308 @@
+/* 🌤️ Basic Page Setup */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f7fa;
+  color: #333;
+}
+
+/* 🌈 Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 12px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.topbar .search-box {
+  position: relative;
+  width: 40%;
+}
+
+#search {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+#suggestions {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  width: 100%;
+  z-index: 100;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  background: #f0f0f0;
+}
+
+/* 🎨 Buttons in Topbar */
+.add-btn, .logout-btn {
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  margin-left: 12px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.add-btn {
+  background: #007bff;
+  color: white;
+}
+
+.add-btn:hover {
+  background: #0056b3;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.logout-btn:hover {
+  background: #b02a37;
+}
+
+/* 🧭 Sidebar */
+.sidebar {
+  width: 200px;
+  background: #ffffff;
+  height: 100vh;
+  padding: 20px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 60px;
+  left: 0;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  font-size: 18px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+
+.filter-btn {
+  width: 100%;
+  background: #f1f1f1;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.filter-btn:hover {
+  background: #007bff;
+  color: white;
+}
+
+/* 📊 Analyze Button */
+.analyze-btn {
+  display: block;
+  text-align: center;
+  background: #28a745;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.analyze-btn:hover {
+  background: #218838;
+}
+
+/* 🧱 Product Cards */
+.card-container {
+  margin-left: 230px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 15px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.card h4 {
+  margin: 10px 0 5px;
+  color: #007bff;
+}
+
+.card p {
+  margin: 4px 0;
+}
+
+/* 🛠 View & Edit Buttons */
+.view-btn, .edit-btn {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: 0.3s;
+}
+
+.view-btn {
+  background: #17a2b8;
+}
+
+.view-btn:hover {
+  background: #117a8b;
+}
+
+.edit-btn {
+  background: #ffc107;
+  color: #333;
+}
+
+.edit-btn:hover {
+  background: #e0a800;
+  color: white;
+}
+
+/* � Locations button & modal */
+.locations-btn {
+  background: linear-gradient(90deg, #6f42c1, #6610f2);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.locations-btn:hover { filter: brightness(1.1); }
+
+.update-locations-label {
+  background: transparent;
+  color: #333;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.locations-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+}
+.locations-modal-content {
+  width: 720px;
+  max-width: 95%;
+  background: #0b1220;
+  color: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.locations-header { display:flex; justify-content:space-between; align-items:center; }
+.locations-list { margin-top: 12px; max-height: 60vh; overflow:auto; }
+.locations-item { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.loc-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.loc-id { font-weight:700; color:#9bd0ff; }
+.loc-branch, .loc-city { color:#dfe9ff; }
+.loc-actions { margin-left:auto; }
+.branch-input, .city-input { padding:6px 8px; border-radius:6px; border:1px solid #ccc; }
+.edit-mode .branch-input, .edit-mode .city-input { width:160px; }
+
+.locations-item .edit-btn { padding:6px 10px; }
+.locations-item .view-btn { padding:6px 10px; margin-right:6px; }
+
+/* �📈 Analyze Page Styles */
+table {
+  border-collapse: collapse;
+  margin: 20px auto;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 80%;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+table th {
+  background: #007bff;
+  color: white;
+}
+
+.back-btn {
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin: 20px;
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  background: #0056b3;
+}
+
+/* 📱 Responsive */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .card-container {
+    margin-left: 0;
+  }
+  .topbar .search-box {
+    width: 60%;
+  }
+}
