@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Button Layout Test</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  body { background-color: #080710; color: #fff; padding: 20px; }
+
+  .test-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+  }
+
+  .card {
+    width: 220px; 
+    background: rgba(255, 255, 255, 0.15); 
+    backdrop-filter: blur(15px);
+    border-radius: 15px; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    padding: 15px; 
+    text-align: center; 
+    margin: 20px auto;
+  }
+
+  .card img { 
+    width: 180px; 
+    height: 130px; 
+    border-radius: 10px; 
+    object-fit: cover; 
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    margin: 0 auto;
+  }
+
+  .card h4 { margin-top: 10px; font-size: 18px; color: #f2f2f2; }
+  .card p { font-size: 14px; margin: 5px 0; color: #ddd; }
+
+  .card-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 15px;
+    flex-wrap: nowrap;
+  }
+
+  .save-btn, .edit-btn, .delete-btn-small {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 11px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .edit-btn {
+    background: linear-gradient(135deg, #b026ff, #8e44ad);
+  }
+
+  .delete-btn-small {
+    background: linear-gradient(135deg, #ff4757, #c44569);
+  }
+
+  .save-btn:hover, .edit-btn:hover, .delete-btn-small:hover { 
+    filter: brightness(1.2); 
+    transform: translateY(-2px);
+  }
+
+  h1 { text-align: center; margin-bottom: 30px; color: #00c6ff; }
+  h2 { margin: 20px 0 10px 0; color: #fff; }
+  .description { margin-bottom: 20px; color: #ddd; }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🎯 Button Layout Preview</h1>
+    
+    <h2>✅ Fixed Button Layout:</h2>
+    <p class="description">All buttons are now the same size and aligned in a single line</p>
+    
+    <div class="card">
+      <div style="width: 180px; height: 130px; background: #333; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+        📱 Product Image
+      </div>
+      <h4>Sample Product</h4>
+      <p>Category: Mobile</p>
+      <p>Qty: 25</p>
+      <div class="card-buttons">
+        <a href="#" class="save-btn">👁️ View</a>
+        <a href="#" class="edit-btn">✏️ Edit</a>
+        <button class="delete-btn-small">🗑️ Del</button>
+      </div>
+    </div>
+
+    <h2>🎨 Key Improvements:</h2>
+    <ul style="color: #ddd; line-height: 1.8; margin-left: 20px;">
+      <li>✅ <strong>Equal button sizes</strong> - All buttons have the same width</li>
+      <li>✅ <strong>Single line layout</strong> - No wrapping to next line</li>
+      <li>✅ <strong>Consistent spacing</strong> - Even gaps between buttons</li>
+      <li>✅ <strong>Responsive design</strong> - Adapts to mobile screens</li>
+      <li>✅ <strong>Better alignment</strong> - Perfectly centered buttons</li>
+      <li>✅ <strong>Shorter text</strong> - "Delete" changed to "Del" for space</li>
+    </ul>
+
+    <h2>📱 Mobile Responsive:</h2>
+    <p class="description">On mobile devices, buttons stack vertically for better usability</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Locations - Inventory Management</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  body { background-color: #080710; color: #fff; overflow-x: hidden; min-height: 100vh; }
+
+  .background { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; }
+  .shape { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; }
+  .shape:nth-child(1){ background: linear-gradient(#1845ad, #23a2f6); width: 400px; height: 400px; top: -150px; left: -200px; }
+  .shape:nth-child(2){ background: linear-gradient(to right, #ff512f, #f09819); width: 350px; height: 350px; bottom: -150px; right: -200px; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05); margin: 20px; position: relative; z-index: 2;
+  }
+
+  .back-btn, .locations-btn {
+    background: rgba(255, 255, 255, 0.2); color: #fff; padding: 10px 15px; border-radius: 8px;
+    border: none; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block;
+  }
+  .back-btn:hover, .locations-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .main-container {
+    margin: 120px 40px 40px 40px;
+    position: relative; z-index: 2;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .section-header h1 {
+    font-size: 36px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+
+  .section-header p {
+    font-size: 16px;
+    color: #ddd;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 20px;
+  }
+
+  .tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+
+  .tab-btn.active, .tab-btn:hover {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .add-btn-container {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .add-btn {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+  }
+  .add-btn:hover { 
+    filter: brightness(1.2); 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
+  }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+  }
+
+  .item-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .item-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .item-info {
+    margin-bottom: 20px;
+  }
+
+  .item-id {
+    font-size: 18px;
+    font-weight: 600;
+    color: #00c6ff;
+    margin-bottom: 8px;
+  }
+
+  .item-details {
+    font-size: 14px;
+    color: #ddd;
+    line-height: 1.6;
+  }
+
+  .item-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .edit-btn, .delete-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .edit-btn {
+    background: linear-gradient(135deg, #b026ff, #8e44ad);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(176, 38, 255, 0.3);
+  }
+  .edit-btn:hover {
+    background: linear-gradient(135deg, #d56aff, #bb6bd9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(176, 38, 255, 0.4);
+  }
+
+  .delete-btn {
+    background: linear-gradient(135deg, #ff4757, #c44569);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+  }
+  .delete-btn:hover {
+    background: linear-gradient(135deg, #ff6b7a, #d63384);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+  }
+
+  .empty-state h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .empty-state p {
+    font-size: 16px;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="background"><div class="shape"></div><div class="shape"></div></div>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <a href="/inventory" class="back-btn">← Back to Inventory</a>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <a href="/inventory" class="locations-btn">🏠 Dashboard</a>
+      <a href="/logout" class="back-btn">Logout</a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="main-container">
+    <div class="section-header">
+      <h1>Location & Movement Management</h1>
+      <p>Manage your warehouse locations and track inventory movements</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('locations')">📍 Locations</button>
+      <button class="tab-btn" onclick="switchTab('movements')">🔁 Movements</button>
+    </div>
+
+    <div class="content-wrapper">
+      <!-- LOCATIONS TAB -->
+      <div id="locations-tab" class="tab-content active">
+        <div class="add-btn-container">
+          <button id="add-location" class="add-btn">+ Add New Location</button>
+        </div>
+        <div id="locations-grid" class="items-grid">
+          <!-- Locations will be populated here -->
+        </div>
+      </div>
+
+      <!-- MOVEMENTS TAB -->
+      <div id="movements-tab" class="tab-content">
+        <div class="add-btn-container">
+          <button id="add-movement" class="add-btn">+ Add New Movement</button>
+        </div>
+        <div id="movements-grid" class="items-grid">
+          <!-- Movements will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+$(document).ready(function() {
+  // ===== Data Variables =====
+  let locations = [];
+  let movements = [];
+
+  // ===== Load Data from Server =====
+  function loadLocations() {
+    $.get('/api/locations')
+      .done(function(data) {
+        console.log("Loaded locations:", data); // Debug log
+        locations = data;
+        renderLocations();
+      })
+      .fail(function(xhr, status, error) {
+        console.log("Failed to load locations from API, using fallback data"); // Debug log
+        // Fallback to dummy data if API fails
+        locations = [
+          { id: "L100", branch_name: "Main Warehouse", city: "Mumbai" },
+          { id: "L101", branch_name: "South Branch", city: "Delhi" },
+          { id: "L123", branch_name: "Main Warehouse", city: "Mumbai" },
+          { id: "L124", branch_name: "South Branch", city: "Delhi" },
+          { id: "L125", branch_name: "East Depot", city: "Bengaluru" },
+          { id: "L126", branch_name: "North Branch", city: "Coimbatore" },
+          { id: "L128", branch_name: "Russov Main Area", city: "Kerala" }
+        ];
+        renderLocations();
+      });
+  }
+
+  function loadMovements() {
+    // For now, using dummy data for movements - you can add API later
+    movements = [
+      { id: "M001", item: "Laptops", from: "Main Warehouse", to: "South Branch", date: "2025-11-01" },
+      { id: "M002", item: "Printers", from: "North Branch", to: "West Depot", date: "2025-11-02" },
+      { id: "M003", item: "Desktops", from: "East Depot", to: "Main Warehouse", date: "2025-11-03" },
+      { id: "M004", item: "Routers", from: "Russov Main Area", to: "South Branch", date: "2025-10-30" },
+      { id: "M005", item: "Cables", from: "Main Warehouse", to: "East Depot", date: "2025-10-28" },
+      { id: "M006", item: "Monitors", from: "South Branch", to: "North Branch", date: "2025-10-25" },
+      { id: "M007", item: "UPS", from: "East Depot", to: "Russov Main Area", date: "2025-10-22" }
+    ];
+  }
+
+  // ====== Tab Switching ======
+  window.switchTab = function(tab) {
+    $('.tab-btn').removeClass('active');
+    $('.tab-content').removeClass('active');
+    
+    $(`button[onclick="switchTab('${tab}')"]`).addClass('active');
+    $(`#${tab}-tab`).addClass('active');
+    
+    if (tab === 'locations') {
+      renderLocations();
+    } else {
+      renderMovements();
+    }
+  };
+
+  // ====== Render Functions ======
+  function renderLocations() {
+    const $grid = $("#locations-grid");
+    $grid.html("");
+    
+    if (locations.length === 0) {
+      $grid.html(`
+        <div class="empty-state">
+          <h3>No Locations Found</h3>
+          <p>Add your first location to get started</p>
+        </div>
+      `);
+      return;
+    }
+    
+    locations.forEach(l => {
+      $grid.append(`
+        <div class="item-card">
+          <div class="item-info">
+            <div class="item-id">ID: ${l.id}</div>
+            <div class="item-details">
+              <strong>Branch:</strong> ${l.branch_name}<br>
+              <strong>City:</strong> ${l.city}
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="edit-btn" onclick="editLocation('${l.id}')">Edit</button>
+            <button class="delete-btn" onclick="deleteLocation('${l.id}')">Delete</button>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  function renderMovements() {
+    const $grid = $("#movements-grid");
+    $grid.html("");
+    
+    if (movements.length === 0) {
+      $grid.html(`
+        <div class="empty-state">
+          <h3>No Movements Found</h3>
+          <p>Add your first movement to get started</p>
+        </div>
+      `);
+      return;
+    }
+    
+    movements.forEach(m => {
+      $grid.append(`
+        <div class="item-card">
+          <div class="item-info">
+            <div class="item-id">ID: ${m.id}</div>
+            <div class="item-details">
+              <strong>Item:</strong> ${m.item}<br>
+              <strong>From:</strong> ${m.from}<br>
+              <strong>To:</strong> ${m.to}<br>
+              <strong>Date:</strong> ${m.date || 'N/A'}
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="edit-btn" onclick="editMovement('${m.id}')">Edit</button>
+            <button class="delete-btn" onclick="deleteMovement('${m.id}')">Delete</button>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  // ====== Location Actions ======
+  window.editLocation = function(id) {
+    const loc = locations.find(l => l.id == id); // Use == instead of === for type flexibility
+    if (!loc) {
+      alert("Location not found!");
+      return;
+    }
+    
+    const newBranch = prompt("Edit Branch:", loc.branch_name);
+    const newCity = prompt("Edit City:", loc.city);
+    
+    if (newBranch && newCity && (newBranch !== loc.branch_name || newCity !== loc.city)) { 
+      // Update via API
+      $.post(`/api/locations/update/${loc.id}`, {
+        branch_name: newBranch,
+        city: newCity
+      })
+      .done(function(response) {
+        if (response.success) {
+          // Update local data
+          loc.branch_name = newBranch; 
+          loc.city = newCity; 
+          renderLocations();
+          alert("Location updated successfully!");
+        } else {
+          alert("Failed to update location: " + (response.message || "Unknown error"));
+        }
+      })
+      .fail(function() {
+        // Fallback to local update if API fails
+        loc.branch_name = newBranch; 
+        loc.city = newCity; 
+        renderLocations();
+        alert("Location updated locally!");
+      });
+    }
+  };
+
+  window.deleteLocation = function(id) {
+    if (confirm("Are you sure you want to delete this location?")) {
+      // Try to delete via API first
+      $.post(`/api/locations/delete/${id}`)
+        .done(function(response) {
+          if (response.success) {
+            // Remove from local array
+            locations = locations.filter(l => l.id != id);
+            renderLocations();
+            alert("Location deleted successfully!");
+          } else {
+            alert("Failed to delete location: " + (response.message || "Unknown error"));
+          }
+        })
+        .fail(function() {
+          // Fallback to local deletion if API fails
+          locations = locations.filter(l => l.id != id);
+          renderLocations();
+          alert("Location deleted locally!");
+        });
+    }
+  };
+
+  $("#add-location").click(function() {
+    const branch = prompt("Enter Branch Name:");
+    const city = prompt("Enter City:");
+    
+    if (branch && city) { 
+      // Add via API
+      $.post('/api/locations/add', {
+        branch_name: branch,
+        city: city
+      })
+      .done(function(response) {
+        if (response.success) {
+          // Reload locations from server to get updated list
+          loadLocations();
+          alert("Location added successfully!");
+        } else {
+          alert("Failed to add location: " + response.message);
+        }
+      })
+      .fail(function() {
+        // Fallback to local addition if API fails
+        const newLocation = {
+          id: "L" + (Math.floor(Math.random() * 900) + 100),
+          branch_name: branch,
+          city: city
+        };
+        locations.push(newLocation); 
+        renderLocations();
+        alert("Location added successfully! (Local storage)");
+      });
+    }
+  });
+
+  // ====== Movement Actions ======
+  window.editMovement = function(id) {
+    const m = movements.find(x => x.id == id);
+    if (!m) {
+      alert("Movement not found!");
+      return;
+    }
+    
+    const newItem = prompt("Edit Item:", m.item);
+    const newFrom = prompt("Edit From:", m.from);
+    const newTo = prompt("Edit To:", m.to);
+    
+    if (newItem && newFrom && newTo) {
+      m.item = newItem; 
+      m.from = newFrom; 
+      m.to = newTo; 
+      renderMovements();
+      alert("Movement updated successfully!");
+    }
+  };
+
+  window.deleteMovement = function(id) {
+    if (confirm("Are you sure you want to delete this movement?")) {
+      movements = movements.filter(m => m.id != id);
+      renderMovements();
+      alert("Movement deleted successfully!");
+    }
+  };
+
+  $("#add-movement").click(function() {
+    const id = "M" + (Math.floor(Math.random() * 900) + 100);
+    const item = prompt("Enter Item:");
+    const from = prompt("From:");
+    const to = prompt("To:");
+    if (item && from && to) { 
+      movements.push({ 
+        id, 
+        item, 
+        from, 
+        to, 
+        date: new Date().toISOString().split('T')[0] 
+      }); 
+      renderMovements(); 
+    }
+  });
+
+  // Initialize with locations tab
+  loadLocations();
+  loadMovements();
+});
+</script>
+
+</body>
+</html>

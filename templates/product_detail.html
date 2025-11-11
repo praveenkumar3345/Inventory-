@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>{{ product.name }} - Details</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
   body {
     font-family: 'Poppins', sans-serif;
@@ -56,33 +57,61 @@
 
   .buttons {
     margin-top: 25px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
-  .edit-btn, .back-btn {
+  .edit-btn, .back-btn, .delete-btn {
     text-decoration: none;
     color: white;
     font-weight: bold;
-    padding: 10px 25px;
+    padding: 12px 24px;
     border-radius: 8px;
-    display: inline-block;
-    margin: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px;
     transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 120px;
+    text-align: center;
   }
 
   .edit-btn {
-    background: #2196f3;
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
   }
 
   .edit-btn:hover {
-    background: #0b7dda;
+    background: linear-gradient(135deg, #1976d2, #1565c0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+  }
+
+  .delete-btn {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+  }
+
+  .delete-btn:hover {
+    background: linear-gradient(135deg, #d32f2f, #c62828);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
   }
 
   .back-btn {
-    background: #6c757d;
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
   }
 
   .back-btn:hover {
-    background: #5a6268;
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
   }
 
   @media (max-width: 600px) {
@@ -94,12 +123,107 @@
       width: 180px;
       height: 180px;
     }
+    .edit-btn, .back-btn, .delete-btn {
+      padding: 10px 20px;
+      font-size: 13px;
+      margin: 5px;
+      min-width: 100px;
+    }
+    .buttons {
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    .edit-btn, .back-btn, .delete-btn {
+      width: 200px;
+      margin: 3px 0;
+    }
+  }
+
+  /* Delete Confirmation Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal h3 {
+    color: #d32f2f;
+    margin-bottom: 15px;
+    font-size: 22px;
+  }
+
+  .modal p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 16px;
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .confirm-delete, .cancel-delete {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  .confirm-delete {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+  }
+
+  .confirm-delete:hover {
+    background: linear-gradient(135deg, #d32f2f, #c62828);
+  }
+
+  .cancel-delete {
+    background: linear-gradient(135deg, #9e9e9e, #757575);
+    color: white;
+  }
+
+  .cancel-delete:hover {
+    background: linear-gradient(135deg, #757575, #616161);
   }
 </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" data-product-id="{{ product.id }}">
     <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="product-img">
     <h2>{{ product.name }}</h2>
     <p><strong>Category:</strong> {{ product.category }}</p>
@@ -108,10 +232,76 @@
     <p><strong>Description:</strong> {{ product.description }}</p>
 
     <div class="buttons">
-      <a href="{{ url_for('edit_product', id=product.id) }}" class="edit-btn">Edit</a>
-      <a href="{{ url_for('inventory') }}" class="back-btn">Back to Inventory</a>
+      <a href="{{ url_for('edit_product', id=product.id) }}" class="edit-btn">✏️ Edit</a>
+      <button onclick="showDeleteModal()" class="delete-btn" data-product-id="{{ product.id }}">🗑️ Delete</button>
+      <a href="{{ url_for('inventory') }}" class="back-btn">← Back to Inventory</a>
     </div>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h3>⚠️ Confirm Deletion</h3>
+      <p>Are you sure you want to delete "<strong>{{ product.name }}</strong>"?<br>This action cannot be undone.</p>
+      <div class="modal-buttons">
+        <button onclick="confirmDelete()" class="confirm-delete">Yes, Delete</button>
+        <button onclick="hideDeleteModal()" class="cancel-delete">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+function showDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'block';
+}
+
+function hideDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'none';
+}
+
+function confirmDelete() {
+  // Hide modal
+  hideDeleteModal();
+  
+  // Get product ID from data attribute
+  const productId = document.querySelector('.container').getAttribute('data-product-id');
+  
+  // Show loading state
+  const deleteBtn = document.querySelector('.delete-btn');
+  deleteBtn.innerHTML = '⏳ Deleting...';
+  deleteBtn.disabled = true;
+  
+  // Make AJAX request to delete the product
+  $.post('/delete/' + productId)
+    .done(function(response) {
+      if (response.success) {
+        // Show success message
+        alert('✅ Product deleted successfully!');
+        // Redirect to inventory page
+        window.location.href = '/inventory';
+      } else {
+        alert('❌ Failed to delete product: ' + response.message);
+        // Reset button
+        deleteBtn.innerHTML = '🗑️ Delete';
+        deleteBtn.disabled = false;
+      }
+    })
+    .fail(function() {
+      alert('❌ Error occurred while deleting the product. Please try again.');
+      // Reset button
+      deleteBtn.innerHTML = '🗑️ Delete';
+      deleteBtn.disabled = false;
+    });
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById('deleteModal');
+  if (event.target == modal) {
+    hideDeleteModal();
+  }
+}
+</script>
 
 </body>
 </html>

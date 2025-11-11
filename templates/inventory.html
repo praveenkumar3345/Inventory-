@@ -7,7 +7,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <style>
-  /* --- SAME GLASS STYLE FROM YOUR CODE --- */
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
   body { background-color: #080710; color: #fff; overflow-x: hidden; min-height: 100vh; }
 
@@ -16,49 +15,123 @@
   .shape:nth-child(1){ background: linear-gradient(#1845ad, #23a2f6); width: 400px; height: 400px; top: -150px; left: -200px; }
   .shape:nth-child(2){ background: linear-gradient(to right, #ff512f, #f09819); width: 350px; height: 350px; bottom: -150px; right: -200px; }
 
-  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;
     background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 10px;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05); margin: 20px; position: relative; z-index: 2; }
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05); margin: 20px; position: relative; z-index: 2;
+  }
 
-  .search-box input { padding: 10px; width: 250px; border-radius: 8px; border: none; outline: none;
-    background: rgba(255, 255, 255, 0.2); color: #fff; }
+  .search-box input {
+    padding: 10px; width: 250px; border-radius: 8px; border: none; outline: none;
+    background: rgba(255, 255, 255, 0.2); color: #fff;
+  }
   .search-box input::placeholder { color: #ddd; }
 
   .add-btn, .logout-btn, .locations-btn {
     background: rgba(255, 255, 255, 0.2); color: #fff; padding: 10px 15px; border-radius: 8px;
-    border: none; cursor: pointer; transition: 0.3s; }
-  .add-btn:hover, .logout-btn:hover, .locations-btn:hover { background: rgba(255, 255, 255, 0.4); }
+    border: none; cursor: pointer; transition: 0.3s;
+  }
+  .add-btn:hover, .logout-btn:hover, .locations-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
 
-  .sidebar { width: 200px; position: fixed; top: 100px; left: 20px; background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px); border-radius: 12px; padding: 20px; box-shadow: 0 0 20px rgba(255,255,255,0.05); z-index: 2; }
-  .filter-btn, .analyze-btn { width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 6px;
-    background: rgba(255, 255, 255, 0.2); color: #fff; cursor: pointer; transition: 0.3s; }
+  .sidebar {
+    width: 200px; position: fixed; top: 100px; left: 20px;
+    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+    border-radius: 12px; padding: 20px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.05); z-index: 2;
+  }
+  .filter-btn, .analyze-btn {
+    width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 6px;
+    background: rgba(255, 255, 255, 0.2); color: #fff; cursor: pointer; transition: 0.3s;
+  }
   .filter-btn:hover, .analyze-btn:hover { background: rgba(255, 255, 255, 0.4); }
 
-  .card-container { margin-left: 250px; margin-top: 100px; display: flex; flex-wrap: wrap;
-    gap: 25px; padding: 20px; justify-content: flex-start; position: relative; z-index: 2; }
-  .card { width: 220px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px); border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3); padding: 15px; text-align: center; transition: transform 0.3s; }
+  .card-container {
+    margin-left: 250px; margin-top: 100px;
+    display: flex; flex-wrap: wrap; gap: 25px; padding: 20px;
+    justify-content: flex-start; position: relative; z-index: 2;
+  }
+  .card {
+    width: 220px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+    border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    padding: 15px; text-align: center; transition: transform 0.3s;
+  }
   .card:hover { transform: scale(1.05); }
   .card img { width: 180px; height: 130px; border-radius: 10px; object-fit: cover; }
   .card h4 { margin-top: 10px; font-size: 18px; color: #f2f2f2; }
   .card p { font-size: 14px; margin: 5px 0; color: #ddd; }
 
-  .locations-modal {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6); z-index: 5; justify-content: center; align-items: center; }
-  .locations-modal-content {
-    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border-radius: 12px;
-    padding: 20px; width: 500px; color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+  .card-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 15px;
+    flex-wrap: nowrap;
+  }
 
-  input, select {
-    width: 100%; padding: 8px; margin: 5px 0; border-radius: 6px; border: none;
-    background: rgba(255,255,255,0.2); color: white; }
+  .save-btn, .edit-btn, .delete-btn-small {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 11px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    flex: 1;
+    text-align: center;
+  }
 
-  .save-btn, .edit-btn {
-    background: linear-gradient(90deg, #00c6ff, #0072ff); color: #fff; border: none;
-    padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
-  .save-btn:hover, .edit-btn:hover { filter: brightness(1.2); }
+  .edit-btn {
+    background: linear-gradient(135deg, #b026ff, #8e44ad);
+  }
+
+  .delete-btn-small {
+    background: linear-gradient(135deg, #ff4757, #c44569);
+  }
+
+  .save-btn:hover, .edit-btn:hover, .delete-btn-small:hover { 
+    filter: brightness(1.2); 
+    transform: translateY(-2px);
+  }
+
+  /* Responsive design for buttons */
+  @media (max-width: 768px) {
+    .card-buttons {
+      gap: 5px;
+    }
+    
+    .save-btn, .edit-btn, .delete-btn-small {
+      padding: 6px 12px;
+      font-size: 10px;
+      min-width: 50px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card-buttons {
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .save-btn, .edit-btn, .delete-btn-small {
+      flex: none;
+      width: 100%;
+    }
+  }
+
+  .save-btn:hover { 
+    filter: brightness(1.2); 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
+  }
   </style>
 </head>
 <body>
@@ -71,8 +144,7 @@
       <div class="search-box">
         <input type="text" id="search" placeholder="Search product...">
       </div>
-      <button id="open-locations" class="locations-btn">📍 Locations</button>
-      <button id="open-movements" class="locations-btn">🔁 Movements</button>
+      <a href="/locations" class="locations-btn">📍 Locations</a>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
       <a href="/add" class="add-btn">+ Add Product</a>
@@ -98,121 +170,100 @@
       <h4>{{ product.name }}</h4>
       <p>Category: {{ product.category }}</p>
       <p>Qty: {{ product.quantity }}</p>
-      <a href="/product/{{ product.id }}" class="save-btn">View</a>
-      <a href="/edit/{{ product.id }}" class="edit-btn">Edit</a>
+      <div class="card-buttons">
+        <a href="/product/{{ product.id }}" class="save-btn">👁️ View</a>
+        <a href="/edit/{{ product.id }}" class="edit-btn">✏️ Edit</a>
+        <button class="delete-btn-small" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}">🗑️ Del</button>
+      </div>
     </div>
     {% endfor %}
   </div>
 
-  <!-- LOCATIONS MODAL -->
-  <div id="locations-modal" class="locations-modal">
-    <div class="locations-modal-content">
-      <h3>Manage Locations</h3>
-      <div id="locations-list"></div>
-      <button id="add-location" class="save-btn">+ Add Location</button>
-      <br><br>
-      <button id="close-locations" class="edit-btn">Close</button>
-    </div>
-  </div>
+  <!-- No modals needed anymore since we have dedicated locations page -->
 
-  <!-- MOVEMENTS MODAL -->
-  <div id="movements-modal" class="locations-modal">
-    <div class="locations-modal-content">
-      <h3>Manage Movements</h3>
-      <div id="movements-list"></div>
-      <button id="add-movement" class="save-btn">+ Add Movement</button>
-      <br><br>
-      <button id="close-movements" class="edit-btn">Close</button>
-    </div>
-  </div>
+<script>
+$(document).ready(function() {
+  // ===== Dummy Data (removed locations and movements data since we have dedicated page) =====
 
-  <script>
-  $(document).ready(function() {
+  // ====== Render Functions (removed since not needed) ======
 
-    // ===== Dummy Data =====
-    let locations = [
-      { id: 1, branch_name: "Main Warehouse", city: "Chennai" },
-      { id: 2, branch_name: "North Depot", city: "Delhi" },
-      { id: 3, branch_name: "South Center", city: "Madurai" }
-    ];
-
-    let movements = [
-      { id: 1, item: "Laptop", from: "Main Warehouse", to: "North Depot" },
-      { id: 2, item: "Phone", from: "North Depot", to: "South Center" },
-      { id: 3, item: "Router", from: "South Center", to: "Main Warehouse" },
-      { id: 4, item: "Tablet", from: "Main Warehouse", to: "South Center" },
-      { id: 5, item: "Monitor", from: "North Depot", to: "Main Warehouse" },
-      { id: 6, item: "Keyboard", from: "South Center", to: "North Depot" }
-    ];
-
-    // ====== Render Locations ======
-    function renderLocations() {
-      const $list = $("#locations-list");
-      $list.html("");
-      locations.forEach(l => {
-        $list.append(`<div style="margin:8px 0;">🗺️ <b>${l.branch_name}</b> - ${l.city}
-          <button class="edit-btn" onclick="editLocation(${l.id})">Edit</button></div>`);
-      });
-    }
-
-    // ====== Render Movements ======
-    function renderMovements() {
-      const $list = $("#movements-list");
-      $list.html("");
-      movements.forEach(m => {
-        $list.append(`<div style="margin:8px 0;">📦 <b>${m.item}</b>: ${m.from} → ${m.to}
-          <button class="edit-btn" onclick="editMovement(${m.id})">Edit</button></div>`);
-      });
-    }
-
-    // ====== Add/Edit Location ======
-    window.editLocation = function(id) {
-      const loc = locations.find(l => l.id === id);
-      const newName = prompt("Edit Branch Name:", loc.branch_name);
-      const newCity = prompt("Edit City:", loc.city);
-      if (newName && newCity) { loc.branch_name = newName; loc.city = newCity; renderLocations(); }
-    };
-
-    $("#add-location").click(function() {
-      const name = prompt("Enter Branch Name:");
-      const city = prompt("Enter City:");
-      if (name && city) {
-        const newId = locations.length + 1;
-        locations.push({ id: newId, branch_name: name, city: city });
-        renderLocations();
+  // ====== Search and Filter Functions ======
+  $('#search').on('input', function() {
+    const query = $(this).val().toLowerCase();
+    $('.card').each(function() {
+      const cardText = $(this).text().toLowerCase();
+      if (cardText.includes(query)) {
+        $(this).show();
+      } else {
+        $(this).hide();
       }
     });
-
-    // ====== Add/Edit Movement ======
-    window.editMovement = function(id) {
-      const m = movements.find(x => x.id === id);
-      const newItem = prompt("Edit Item:", m.item);
-      const newFrom = prompt("Edit From:", m.from);
-      const newTo = prompt("Edit To:", m.to);
-      if (newItem && newFrom && newTo) {
-        m.item = newItem; m.from = newFrom; m.to = newTo; renderMovements();
-      }
-    };
-
-    $("#add-movement").click(function() {
-      const item = prompt("Enter Item:");
-      const from = prompt("From:");
-      const to = prompt("To:");
-      if (item && from && to) {
-        const newId = movements.length + 1;
-        movements.push({ id: newId, item, from, to });
-        renderMovements();
-      }
-    });
-
-    // ====== Open/Close Modals ======
-    $("#open-locations").click(function() { $("#locations-modal").fadeIn(150); renderLocations(); });
-    $("#close-locations").click(function() { $("#locations-modal").fadeOut(150); });
-
-    $("#open-movements").click(function() { $("#movements-modal").fadeIn(150); renderMovements(); });
-    $("#close-movements").click(function() { $("#movements-modal").fadeOut(150); });
-
   });
-  </script>
+
+  $('.filter-btn').click(function() {
+    const category = $(this).data('category');
+    $('.filter-btn').removeClass('active');
+    $(this).addClass('active');
+    
+    if (category === '') {
+      $('.card').show();
+    } else {
+      $('.card').each(function() {
+        const cardCategory = $(this).find('p:first').text();
+        if (cardCategory.includes(category)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+  });
+
+  // ====== Delete Product Event Delegation ======
+  $(document).on('click', '.delete-btn-small', function() {
+    const productId = $(this).data('product-id');
+    const productName = $(this).data('product-name');
+    deleteProductFromInventory(productId, productName, this);
+  });
+
+});
+
+// ====== Delete Product Function ======
+function deleteProductFromInventory(productId, productName, buttonElement) {
+  if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+    // Show loading state
+    const deleteBtn = buttonElement;
+    const originalText = deleteBtn.innerHTML;
+    deleteBtn.innerHTML = '⏳';
+    deleteBtn.disabled = true;
+    
+    // Make AJAX request to delete the product
+    $.post('/delete/' + productId)
+      .done(function(response) {
+        if (response.success) {
+          // Remove the card from the page
+          $(deleteBtn).closest('.card').fadeOut(300, function() {
+            $(this).remove();
+          });
+          
+          // Show success message
+          alert('✅ Product deleted successfully!');
+        } else {
+          alert('❌ Failed to delete product: ' + response.message);
+          // Reset button
+          deleteBtn.innerHTML = originalText;
+          deleteBtn.disabled = false;
+        }
+      })
+      .fail(function() {
+        alert('❌ Error occurred while deleting the product. Please try again.');
+        // Reset button
+        deleteBtn.innerHTML = originalText;
+        deleteBtn.disabled = false;
+      });
+  }
+}
+</script>
+
 </body>
 </html>

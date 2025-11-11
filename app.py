@@ -112,6 +112,26 @@ def product_detail(id):
     return render_template('product_detail.html', product=product)
 
 
+# ----------------- DELETE PRODUCT -----------------
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete_product(id):
+    """Delete a product from the database."""
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM products WHERE id = %s", (id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({'success': True, 'message': 'Product deleted successfully!'})
+    except Exception as e:
+        print("Error deleting product:", e)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
 # ----------------- FILTER PRODUCTS -----------------
 @app.route('/filter')
 def filter_products():
@@ -146,12 +166,19 @@ def search():
 
 
 # ----------------- LOCATIONS (for branches/warehouses) -----------------
-@app.route('/locations', methods=['GET'])
+@app.route('/locations')
+def locations_page():
+    """Render the dedicated locations management page."""
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template('locations.html')
+
+@app.route('/api/locations', methods=['GET'])
 def get_locations():
     """Return a JSON list of locations with id, branch_name and city.
 
     Assumes a `locations` table exists with columns (id, branch_name, city).
-    If the table doesn't exist or an error occurs, returns an empty list.
+    If the table doesn't exist or an error occurs, returns dummy data.
     """
     try:
         conn = get_db_connection()
@@ -164,10 +191,62 @@ def get_locations():
     except Exception as e:
         # Fail gracefully for projects without a locations table
         print("Error fetching locations:", e)
-        return jsonify([])
+        # Return dummy data as fallback
+        dummy_locations = [
+            {"id": "L100", "branch_name": "Main Warehouse", "city": "Mumbai"},
+            {"id": "L101", "branch_name": "South Branch", "city": "Delhi"},
+            {"id": "L123", "branch_name": "Main Warehouse", "city": "Mumbai"},
+            {"id": "L124", "branch_name": "South Branch", "city": "Delhi"},
+            {"id": "L125", "branch_name": "East Depot", "city": "Bengaluru"},
+            {"id": "L126", "branch_name": "North Branch", "city": "Coimbatore"},
+            {"id": "L128", "branch_name": "Russov Main Area", "city": "Kerala"}
+        ]
+        return jsonify(dummy_locations)
+
+@app.route('/api/locations/add', methods=['POST'])
+def add_location():
+    """Add a new location to the database."""
+    try:
+        branch_name = request.form.get('branch_name')
+        city = request.form.get('city')
+        
+        if not branch_name or not city:
+            return jsonify({'success': False, 'message': 'Branch name and city are required'}), 400
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO locations (branch_name, city) VALUES (%s, %s)",
+            (branch_name, city)
+        )
+        conn.commit()
+        location_id = cursor.lastrowid
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'success': True, 'id': location_id})
+    except Exception as e:
+        print("Error adding location:", e)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/locations/delete/<int:loc_id>', methods=['POST', 'DELETE'])
+def delete_location(loc_id):
+    """Delete a location from the database."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM locations WHERE id = %s", (loc_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        print("Error deleting location:", e)
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 
-@app.route('/locations/update/<int:loc_id>', methods=['POST'])
+@app.route('/api/locations/update/<int:loc_id>', methods=['POST'])
 def update_location(loc_id):
     """Update a location's branch_name and city.
 
